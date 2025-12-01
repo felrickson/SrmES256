@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apresentação Controle - Grupo 4</title>
+
+    <!-- Bibliotecas -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+
+    <!-- MathJax -->
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 260px;
+            background-color: #1e293b;
+            border-right: 1px solid #334155;
+            display: flex;
+            flex-direction: column;
+            z-index: 50;
+        }
+
+        .main-stage {
+            flex: 1;
+            position: relative;
+            background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 100%);
+            display: flex;
+            flex-direction: column;
+            /* justify-content removed as we use absolute positioning for footer */
+            overflow: hidden;
+        }
+
+        /* Container do conteúdo do slide */
+        .slide-content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            /* Scroll apenas no conteúdo */
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 60px;
+            /* Space for control bar */
+        }
+
+        .sub-slide {
+            display: none;
+            flex-direction: column;
+            padding: 2rem 3rem;
+            animation: fadeIn 0.4s ease-out;
+            min-height: 100%;
+            /* Garante altura mínima */
+            justify-content: center;
+            /* Centraliza verticalmente */
+            flex: 1;
+            /* Ocupa o espaço restante */
+        }
+
+        .sub-slide.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .nav-btn {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-left: 4px solid transparent;
+            transition: all 0.2s;
+            cursor: pointer;
+            color: #94a3b8;
+        }
+
+        .nav-btn:hover {
+            background-color: #334155;
+            color: #fff;
+        }
+
+        .nav-btn.active {
+            background-color: #334155;
+            border-left-color: #6366f1;
+            color: #818cf8;
+            font-weight: 600;
+        }
+
+        .control-bar {
+            height: 60px;
+            background-color: #1e293b;
+            border-top: 1px solid #334155;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: absolute !important;
+            bottom: 0 !important;
+            left: 0 !important;
+            right: 0 !important;
+            width: 100% !important;
+            z-index: 50;
+        }
+
+        .chart-box {
+            position: relative;
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px solid #334155;
+            border-radius: 12px;
+            overflow: hidden;
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* TEXTO MELHORADO */
+        .highlight-box {
+            background: rgba(99, 102, 241, 0.1);
+            border-left: 4px solid #6366f1;
+            padding: 1.25rem;
+            margin-bottom: 1.5rem;
+            border-radius: 0 8px 8px 0;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .bullet-point {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.25rem;
+            /* Mais espaço entre itens */
+            color: #e2e8f0;
+            font-size: 1rem;
+            /* Fonte maior */
+            line-height: 1.6;
+            /* Leitura mais confortável */
+        }
+
+        .bullet-point::before {
+            content: "•";
+            color: #6366f1;
+            font-weight: bold;
+            font-size: 1.5rem;
+            margin-right: 0.75rem;
+            line-height: 1;
+            flex-shrink: 0;
+            margin-top: 2px;
+            /* Alinhamento ótico */
+        }
+
+        .bullet-point strong {
+            color: #ffffff;
+            font-weight: 700;
+            margin-right: 4px;
+        }
+
+        /* Destaque para Passos */
+        .step-label {
+            color: #818cf8;
+            font-weight: 800;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 0.2rem;
+        }
+
+        canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .chart-tag {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 0.7rem;
+            font-weight: bold;
+            text-transform: uppercase;
+            padding: 4px 8px;
+            border-radius: 4px;
+            z-index: 10;
+            pointer-events: none;
+        }
+
+        .tag-concept {
+            background: rgba(255, 255, 255, 0.1);
+            color: #94a3b8;
+            border: 1px solid #475569;
+        }
+
+        .tag-sim {
+            background: rgba(16, 185, 129, 0.1);
+            color: #34d399;
+            border: 1px solid #059669;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="slide-container">
+
+        <nav class="sidebar">
+            <div class="p-6 border-b border-slate-700">
+                <h1 class="text-xl font-bold text-indigo-400">ENG. BIOMÉDICA</h1>
+                <p class="text-xs text-slate-500 mt-1 font-mono">ES256 - Servomecanismo</p>
+            </div>
+            <div class="flex-1 overflow-y-auto py-2">
+                <button onclick="switchSection('felipe')" id="btn-felipe" class="nav-btn active">
+                    <div class="text-xs uppercase tracking-wider mb-1 opacity-70">Introdução</div>
+                    1. Felipe Rickson
+                </button>
+                <button onclick="switchSection('gabriel')" id="btn-gabriel" class="nav-btn">
+                    <div class="text-xs uppercase tracking-wider mb-1 opacity-70">Caso 1: Estável</div>
+                    2. Gabriel
+                </button>
+                <button onclick="switchSection('cintia')" id="btn-cintia" class="nav-btn">
+                    <div class="text-xs uppercase tracking-wider mb-1 opacity-70">Teoria Nyquist</div>
+                    3. Cintia
+                </button>
+                <button onclick="switchSection('nick')" id="btn-nick" class="nav-btn">
+                    <div class="text-xs uppercase tracking-wider mb-1 opacity-70">Caso 2: Integrador</div>
+                    4. Nick
+                </button>
+                <button onclick="switchSection('dierson')" id="btn-dierson" class="nav-btn">
+                    <div class="text-xs uppercase tracking-wider mb-1 opacity-70">Caso 3: Instável</div>
+                    5. Dierson
+                </button>
+                <button onclick="switchSection('guilherme')" id="btn-guilherme" class="nav-btn">
+                    <div class="text-xs uppercase tracking-wider mb-1 opacity-70">Conclusão</div>
+                    6. Guilherme
+                </button>
+            </div>
+            <div class="p-4 border-t border-slate-700 text-xs text-slate-500 text-center">
+                Prof. Fernando Sales (UFPE)
+            </div>
+        </nav>
+
+        <div class="main-stage">
+
+            <div class="slide-content-wrapper">
+                <!-- FELIPE -->
+                <div id="section-felipe" class="h-full relative group-section">
+                    <div class="sub-slide active" data-index="0">
+                        <div class="flex flex-col items-center justify-center h-full text-center">
+                            <div
+                                class="inline-block px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 font-mono text-sm mb-6 border border-indigo-500/50">
+                                ES256 - Servomecanismo | UFPE</div>
+                            <h1 class="text-6xl font-bold mb-6">Estabilidade Relativa</h1>
+                            <p class="text-2xl text-slate-400 max-w-2xl leading-relaxed">Análise de robustez no domínio
+                                da
+                                frequência utilizando Diagramas de Bode e Nyquist.</p>
+                            <p class="mt-8 text-slate-500 font-mono text-sm">Prof. Fernando Sales</p>
+                        </div>
+                    </div>
+
+                    <!-- Felipe 1.2: GM -->
+                    <div class="sub-slide" data-index="1">
+                        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3"><span
+                                class="w-8 h-8 rounded bg-emerald-500 text-slate-900 flex items-center justify-center text-lg font-bold">1</span>
+                            Margem de Ganho (GM)</h2>
+                        <div class="grid grid-cols-3 gap-10 h-full"> <!-- Aumentei gap -->
+                            <div class="col-span-1 flex flex-col justify-center">
+                                <div class="highlight-box border-emerald-500 bg-emerald-500/10">
+                                    <h3 class="font-bold text-emerald-400 mb-2 text-lg">Conceito</h3>
+                                    <p class="text-base text-slate-200 leading-relaxed">Reserva de estabilidade quanto
+                                        ao
+                                        ganho $K$. Mede o quanto podemos amplificar o sinal antes de oscilar.</p>
+                                </div>
+                                <div>
+                                    <h4
+                                        class="text-xs font-bold text-slate-500 uppercase mb-4 tracking-widest border-b border-slate-700 pb-2">
+                                        Procedimento Visual</h4>
+                                    <div class="bullet-point">
+                                        <div><span class="step-label">Passo 1</span>Observando o gráfico inferior
+                                            (FASE),
+                                            encontrando onde a curva cruza a linha tracejada de <span
+                                                class="text-emerald-400 font-bold">-180°</span>.</div>
+                                    </div>
+                                    <div class="bullet-point">
+                                        <div><span class="step-label">Passo 2</span>Subindo verticalmente até o gráfico
+                                            superior (MAGNITUDE).</div>
+                                    </div>
+                                    <div class="bullet-point">
+                                        <div><span class="step-label">Conclusão</span>A distância entre a curva azul e a
+                                            linha vermelha (0dB) é a Margem de Ganho.</div>
+                                    </div>
+                                    <div
+                                        class="mt-4 p-3 bg-emerald-900/30 border border-emerald-500/30 rounded text-sm text-emerald-200">
+                                        <strong>Regra:</strong> Se Magnitude < 0 dB neste ponto → <span
+                                            class="font-bold">
+                                            ESTÁVEL</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 chart-box p-4 bg-slate-900 relative">
+                                <div class="chart-tag tag-concept">Ilustração Conceitual</div>
+                                <svg class="w-full h-full" viewBox="0 0 500 400" preserveAspectRatio="xMidYMid meet">
+                                    <defs>
+                                        <marker id="arrow" markerWidth="10" markerHeight="10" refX="0" refY="3"
+                                            orient="auto">
+                                            <path d="M0,0 L0,6 L9,3 z" fill="#10b981" />
+                                        </marker>
+                                    </defs>
+                                    <rect width="500" height="400" fill="#0f172a" />
+                                    <line x1="100" y1="0" x2="100" y2="400" stroke="#334155" stroke-dasharray="2" />
+                                    <line x1="250" y1="0" x2="250" y2="400" stroke="#334155" stroke-dasharray="2" />
+                                    <line x1="400" y1="0" x2="400" y2="400" stroke="#334155" stroke-dasharray="2" />
+
+                                    <!-- MAGNITUDE -->
+                                    <g transform="translate(0, 0)">
+                                        <text x="10" y="20" fill="#94a3b8" font-size="14" font-weight="bold">Magnitude
+                                            (dB)</text>
+                                        <line x1="50" y1="80" x2="450" y2="80" stroke="#ef4444" stroke-width="2"
+                                            stroke-dasharray="5,5" />
+                                        <text x="460" y="85" fill="#ef4444" font-size="12">0 dB</text>
+                                        <path d="M50,60 Q200,60 450,180" fill="none" stroke="#6366f1"
+                                            stroke-width="4" />
+                                    </g>
+
+                                    <line x1="0" y1="200" x2="500" y2="200" stroke="#475569" stroke-width="2" />
+
+                                    <!-- FASE -->
+                                    <g transform="translate(0, 200)">
+                                        <text x="10" y="20" fill="#94a3b8" font-size="14" font-weight="bold">Fase
+                                            (Graus)</text>
+                                        <line x1="50" y1="150" x2="450" y2="150" stroke="#ef4444" stroke-width="2"
+                                            stroke-dasharray="5,5" />
+                                        <text x="460" y="155" fill="#ef4444" font-size="12">-180°</text>
+                                        <path d="M50,50 Q200,50 350,150 Q400,170 450,180" fill="none" stroke="#10b981"
+                                            stroke-width="4" />
+                                    </g>
+
+                                    <!-- ANOTAÇÕES -->
+                                    <circle cx="350" cy="350" r="6" fill="#10b981" />
+                                    <line x1="350" y1="350" x2="350" y2="85" stroke="#10b981" stroke-width="2"
+                                        stroke-dasharray="4" />
+                                    <line x1="350" y1="85" x2="350" y2="115" stroke="#10b981" stroke-width="3"
+                                        marker-end="url(#arrow)" />
+                                    <rect x="250" y="90" width="90" height="25" rx="4" fill="#1e293b"
+                                        stroke="#10b981" />
+                                    <text x="295" y="107" fill="#10b981" font-size="12" font-weight="bold"
+                                        text-anchor="middle">Margem GM</text>
+
+                                    <!-- EIXO X -->
+                                    <text x="250" y="390" text-anchor="middle" fill="#94a3b8" font-size="12"
+                                        font-weight="bold">Frequência ω (rad/s)</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Felipe 1.3: PM -->
+                    <div class="sub-slide" data-index="2">
+                        <h2 class="text-3xl font-bold mb-6 flex items-center gap-3"><span
+                                class="w-8 h-8 rounded bg-indigo-500 text-white flex items-center justify-center text-lg font-bold">2</span>
+                            Margem de Fase (PM)</h2>
+                        <div class="grid grid-cols-3 gap-10 h-full">
+                            <div class="col-span-1 flex flex-col justify-center">
+                                <div class="highlight-box">
+                                    <h3 class="font-bold text-indigo-400 mb-2 text-lg">Conceito</h3>
+                                    <p class="text-base text-slate-200 leading-relaxed">Tolerância a atrasos. Quanto o
+                                        sinal
+                                        pode "atrasar" antes de virar feedback positivo (instabilidade).</p>
+                                </div>
+                                <div>
+                                    <h4
+                                        class="text-xs font-bold text-slate-500 uppercase mb-4 tracking-widest border-b border-slate-700 pb-2">
+                                        Procedimento Visual</h4>
+                                    <div class="bullet-point">
+                                        <div><span class="step-label">Passo 1</span>Observando o gráfico superior
+                                            (MAGNITUDE), encontrando o corte de <span
+                                                class="text-indigo-400 font-bold">0
+                                                dB</span>.</div>
+                                    </div>
+                                    <div class="bullet-point">
+                                        <div><span class="step-label">Passo 2</span>Descendo verticalmente até o gráfico
+                                            de
+                                            FASE.</div>
+                                    </div>
+                                    <div class="bullet-point">
+                                        <div><span class="step-label">Conclusão</span>A distância vertical da curva até
+                                            a
+                                            linha de -180° é a Margem de Fase.</div>
+                                    </div>
+                                    <div
+                                        class="mt-4 p-3 bg-indigo-900/30 border border-indigo-500/30 rounded text-sm text-indigo-200">
+                                        <strong>Regra:</strong> Se Fase > -180° → <span class="font-bold">ESTÁVEL</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-span-2 chart-box p-4 bg-slate-900 relative">
+                                <div class="chart-tag tag-concept">Ilustração Conceitual</div>
+                                <svg class="w-full h-full" viewBox="0 0 500 400" preserveAspectRatio="xMidYMid meet">
+                                    <defs>
+                                        <marker id="arrow2" markerWidth="10" markerHeight="10" refX="0" refY="3"
+                                            orient="auto">
+                                            <path d="M0,0 L0,6 L9,3 z" fill="#6366f1" />
+                                        </marker>
+                                    </defs>
+                                    <rect width="500" height="400" fill="#0f172a" />
+                                    <line x1="100" y1="0" x2="100" y2="400" stroke="#334155" stroke-dasharray="2" />
+                                    <line x1="250" y1="0" x2="250" y2="400" stroke="#334155" stroke-dasharray="2" />
+                                    <line x1="400" y1="0" x2="400" y2="400" stroke="#334155" stroke-dasharray="2" />
+
+                                    <!-- MAGNITUDE -->
+                                    <g transform="translate(0, 0)">
+                                        <text x="10" y="20" fill="#94a3b8" font-size="14" font-weight="bold">Magnitude
+                                            (dB)</text>
+                                        <line x1="50" y1="120" x2="450" y2="120" stroke="#ef4444" stroke-width="2"
+                                            stroke-dasharray="5,5" />
+                                        <text x="460" y="125" fill="#ef4444" font-size="12">0 dB</text>
+                                        <path d="M50,40 Q150,40 250,120 T450,200" fill="none" stroke="#6366f1"
+                                            stroke-width="4" />
+                                    </g>
+
+                                    <line x1="0" y1="200" x2="500" y2="200" stroke="#475569" stroke-width="2" />
+
+                                    <!-- FASE -->
+                                    <g transform="translate(0, 200)">
+                                        <text x="10" y="20" fill="#94a3b8" font-size="14" font-weight="bold">Fase
+                                            (Graus)</text>
+                                        <line x1="50" y1="150" x2="450" y2="150" stroke="#ef4444" stroke-width="2"
+                                            stroke-dasharray="5,5" />
+                                        <text x="460" y="155" fill="#ef4444" font-size="12">-180°</text>
+                                        <path d="M50,50 Q200,50 450,120" fill="none" stroke="#10b981"
+                                            stroke-width="4" />
+                                    </g>
+
+                                    <!-- ANOTAÇÕES -->
+                                    <circle cx="250" cy="120" r="6" fill="#6366f1" />
+                                    <line x1="250" y1="120" x2="250" y2="345" stroke="#6366f1" stroke-width="2"
+                                        stroke-dasharray="4" />
+                                    <line x1="250" y1="345" x2="250" y2="285" stroke="#6366f1" stroke-width="3"
+                                        marker-end="url(#arrow2)" />
+                                    <rect x="265" y="300" width="90" height="25" rx="4" fill="#1e293b"
+                                        stroke="#6366f1" />
+                                    <text x="310" y="317" fill="#6366f1" font-size="12" font-weight="bold"
+                                        text-anchor="middle">Margem PM</text>
+
+                                    <!-- EIXO X -->
+                                    <text x="250" y="390" text-anchor="middle" fill="#94a3b8" font-size="12"
+                                        font-weight="bold">Frequência ω (rad/s)</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GABRIEL -->
+                <div id="section-gabriel" class="h-full relative hidden group-section">
+                    <div class="sub-slide active" data-index="0">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 class="text-4xl font-bold text-white">Caso 1: Sistema Estável</h2>
+                                <p class="text-indigo-400 font-mono mt-2">$$ G(s) = \frac{10}{(s+1)(s+2)(s+3)} $$</p>
+                            </div>
+                            <div
+                                class="bg-indigo-900 px-4 py-2 rounded text-indigo-200 text-sm font-bold border border-indigo-700">
+                                🚗 Aplicação: Suspensão Ativa</div>
+                        </div>
+                        <div class="grid grid-cols-2 gap-8 flex-1">
+                            <div class="bg-slate-800 p-6 rounded-xl border border-slate-700">
+                                <h3 class="text-xl font-bold mb-4 text-emerald-400">Pontos de Destaque</h3>
+                                <div class="space-y-4">
+                                    <div class="bullet-point"><strong>3 Polos Reais:</strong> Todos no Semi-Plano
+                                        Esquerdo
+                                        (s = -1, -2, -3). A parte real negativa garante dissipação de energia natural.
+                                    </div>
+                                    <div class="bullet-point"><strong>Estabilidade Inerente:</strong> O sistema é BIBO
+                                        Estável (Bounded Input, Bounded Output). Perturbações são amortecidas pelo
+                                        sistema.
+                                    </div>
+                                    <div class="bullet-point"><strong>Aplicação Prática:</strong> Suspensão de carro. Ao
+                                        passar por um buraco, a mola e o amortecedor absorvem a energia e o carro
+                                        estabiliza
+                                        rapidamente.</div>
+                                </div>
+                            </div>
+                            <div
+                                class="flex items-center justify-center opacity-50 flex-col border border-dashed border-slate-700 rounded-xl p-8">
+                                <div class="text-center">
+                                    <div class="text-8xl mb-6">🏎️</div>
+                                    <h3 class="text-2xl font-bold text-slate-300 mb-2">Analogia Física</h3>
+                                    <p class="text-slate-400 max-w-xs mx-auto">O sistema se comporta como um carro com
+                                        suspensão bem calibrada. Absorve impactos sem oscilar indefinidamente.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sub-slide" data-index="1">
+                        <h2 class="text-2xl font-bold mb-4">Análise Detalhada (Bode)</h2>
+                        <div class="grid grid-cols-4 gap-4 h-full">
+                            <div class="col-span-1 flex flex-col justify-center">
+                                <div class="highlight-box border-emerald-500 bg-emerald-500/10 mb-6">
+                                    <h4 class="font-bold text-emerald-400 text-lg mb-2">Margem de Ganho</h4>
+                                    <p class="text-sm text-slate-300">A fase cruza -180° quando o ganho já é muito
+                                        pequeno
+                                        (negativo em dB).</p>
+                                    <div class="mt-2 text-2xl font-mono text-white font-bold">GM ≈ +25 dB</div>
+                                </div>
+                                <div class="highlight-box border-indigo-500 bg-indigo-500/10">
+                                    <h4 class="font-bold text-indigo-400 text-lg mb-2">Margem de Fase</h4>
+                                    <p class="text-sm text-slate-300">O ganho cai para 0dB rapidamente, mantendo uma
+                                        fase
+                                        "segura".</p>
+                                    <div class="mt-2 text-2xl font-mono text-white font-bold">PM ≈ 65°</div>
+                                </div>
+                            </div>
+                            <div
+                                class="col-span-3 chart-box bg-slate-900 relative p-2 pt-8 flex items-center justify-center">
+                                <div class="chart-tag tag-sim" style="top: 5px;">Simulação Numérica (Python)</div>
+                                <img src="gabriel_bode.png" alt="Bode Plot - Gabriel"
+                                    class="max-w-full max-h-full object-contain">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- CINTIA -->
+                <div id="section-cintia" class="h-full relative hidden group-section">
+                    <div class="sub-slide active" data-index="0">
+                        <div class="flex flex-col items-center justify-center h-full text-center">
+                            <h1 class="text-5xl font-bold mb-8">O Critério de Nyquist</h1>
+                            <div class="grid grid-cols-2 gap-12 max-w-4xl w-full text-left">
+                                <div
+                                    class="bg-slate-800 p-8 rounded-xl border border-slate-600 flex flex-col items-center justify-center">
+                                    <h3 class="text-2xl font-bold text-rose-400 mb-2">O Ponto Crítico</h3>
+                                    <div
+                                        class="text-6xl font-mono text-center my-6 text-white bg-slate-900 px-6 py-2 rounded">
+                                        -1 + j0</div>
+                                </div>
+                                <div class="flex flex-col justify-center space-y-6">
+                                    <div class="highlight-box border-rose-500 bg-rose-500/10">
+                                        <h3 class="font-bold text-rose-400 mb-2">A Regra de Ouro</h3>
+                                        <p class="text-sm text-slate-300">Para sistemas estáveis em malha aberta
+                                            ($P=0$):
+                                        </p>
+                                        <p class="text-lg font-bold text-white mt-2">O sistema é estável se o contorno
+                                            <span class="text-rose-400">NÃO</span> envolver o ponto -1.
+                                        </p>
+                                    </div>
+                                    <p class="text-sm text-slate-400"><strong>Vantagem:</strong> Mostra a estabilidade
+                                        absoluta de forma geométrica. Se a curva "abraçar" o ponto -1, o sistema vai
+                                        explodir (divergir).</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sub-slide" data-index="1">
+                        <h2 class="text-2xl font-bold mb-4">Mapeamento Polar</h2>
+                        <div class="grid grid-cols-4 gap-4 h-full">
+                            <div class="col-span-1 flex flex-col justify-center space-y-6">
+                                <h4
+                                    class="font-bold text-slate-400 uppercase text-xs tracking-wider border-b border-slate-700 pb-2">
+                                    Como Interpretar</h4>
+                                <div class="bullet-point text-sm">
+                                    <div><span class="step-label text-indigo-400">Curva Azul</span>É o mapeamento de
+                                        $G(j\omega)$ no plano complexo.</div>
+                                </div>
+                                <div class="bullet-point text-sm">
+                                    <div><span class="step-label text-rose-500">Ponto Vermelho</span>É o ponto crítico
+                                        (-1,
+                                        0). O "buraco negro" da instabilidade.</div>
+                                </div>
+                                <div class="bullet-point text-sm">
+                                    <div><span class="step-label text-emerald-400">Distância</span>A proximidade mínima
+                                        entre a curva e o ponto define a robustez.</div>
+                                </div>
+                            </div>
+                            <div
+                                class="col-span-3 chart-box bg-slate-900 flex items-center justify-center relative p-2">
+                                <div class="chart-tag tag-concept">Ilustração Conceitual (Python)</div>
+                                <img src="cintia_nyquist.png" alt="Nyquist Plot - Cintia"
+                                    class="max-w-full max-h-full object-contain">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NICK -->
+                <div id="section-nick" class="h-full relative hidden group-section">
+                    <div class="sub-slide active" data-index="0">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 class="text-4xl font-bold text-white">Caso 2: Integrador</h2>
+                                <p class="text-amber-400 font-mono mt-2">$$ G(s) = \frac{5}{s(s+1)(s+2)} $$</p>
+                            </div>
+                            <div
+                                class="bg-amber-900 px-4 py-2 rounded text-amber-200 text-sm font-bold border border-amber-700">
+                                🚁 Aplicação: Altitude de Drone</div>
+                        </div>
+                        <div class="p-6 bg-slate-800 rounded-xl border border-slate-700">
+                            <h3 class="text-xl font-bold mb-4 text-amber-400">Efeito do Polo na Origem ($1/s$)</h3>
+                            <div class="space-y-4">
+                                <div class="bullet-point"><strong>Física do Integrador:</strong> O sistema possui
+                                    "memória".
+                                    Entrada constante = Saída Rampa. Ex: Velocidade constante dos motores $\to$ Altitude
+                                    subindo sem parar.</div>
+                                <div class="bullet-point"><strong>Fase Inicial:</strong> O integrador adiciona -90° de
+                                    fase
+                                    logo na partida.</div>
+                                <div class="bullet-point"><strong>No Nyquist:</strong> A magnitude tende ao infinito em
+                                    $\omega \to 0$, fazendo a curva "vir de baixo" (assíntota vertical).</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sub-slide" data-index="1">
+                        <h2 class="text-2xl font-bold mb-4">Análise Nyquist (Integrador)</h2>
+                        <div class="grid grid-cols-4 gap-4 h-full">
+                            <div class="col-span-1 flex flex-col justify-center">
+                                <div class="highlight-box border-amber-500 bg-amber-500/10">
+                                    <h4 class="font-bold text-amber-400 text-lg mb-2">Estabilidade Condicional</h4>
+                                    <div class="bullet-point text-sm mb-2">A curva passa à direita do ponto -1. Estável.
+                                    </div>
+                                    <div class="bullet-point text-sm mb-2">Porém, passa "perto". O sistema é estável mas
+                                        menos robusto que o Caso 1.</div>
+                                    <div class="bullet-point text-sm"><strong>Atenção:</strong> Aumentar muito o ganho
+                                        empurraria a curva para envolver o -1.</div>
+                                </div>
+                            </div>
+                            <div
+                                class="col-span-3 chart-box bg-slate-900 relative p-2 flex items-center justify-center">
+                                <div class="chart-tag tag-sim">Simulação Numérica (Python)</div>
+                                <img src="nick_nyquist.png" alt="Nyquist Plot - Nick"
+                                    class="max-w-full max-h-full object-contain">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- DIERSON -->
+                <div id="section-dierson" class="h-full relative hidden group-section">
+                    <div class="sub-slide active" data-index="0">
+                        <div class="flex items-center justify-between mb-8">
+                            <div>
+                                <h2 class="text-4xl font-bold text-white">Caso 3: Instável</h2>
+                                <p class="text-rose-400 font-mono mt-2">$$ G(s) = \frac{10(s-1)}{(s+2)(s+3)} $$</p>
+                            </div>
+                            <div
+                                class="bg-rose-900 px-4 py-2 rounded text-rose-200 text-sm font-bold border border-rose-700">
+                                ✈️ Aplicação: Caça Militar</div>
+                        </div>
+                        <div class="bg-rose-900/10 border border-rose-500/30 p-6 rounded-xl">
+                            <h3 class="text-xl font-bold text-rose-400 mb-2">Zero no Semi-Plano Direito ($s=+1$)</h3>
+                            <div class="space-y-4 mt-4">
+                                <div class="bullet-point"><strong>Fase Não-Mínima:</strong> O zero positivo adiciona
+                                    magnitude mas subtrai fase. O sistema responde "ao contrário" inicialmente.</div>
+                                <div class="bullet-point"><strong>Analogia:</strong> Empinar uma moto. Para levantar a
+                                    frente, você joga o corpo para trás.</div>
+                                <div class="bullet-point"><strong>Perigo Matemático:</strong> O ganho sobe enquanto a
+                                    fase
+                                    despenca. Pior cenário para controle.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sub-slide" data-index="1">
+                        <h2 class="text-2xl font-bold mb-2">Comparativo Crítico</h2>
+                        <div class="grid grid-cols-2 gap-4 h-full">
+                            <div class="chart-box p-2 bg-slate-900 relative flex items-center justify-center">
+                                <div class="chart-tag tag-sim" style="right: 10px; top: 10px;">Bode</div>
+                                <img src="dierson_bode.png" alt="Bode Plot - Dierson"
+                                    class="max-w-full max-h-full object-contain">
+                            </div>
+                            <div class="chart-box p-2 bg-slate-900 relative flex items-center justify-center">
+                                <div class="chart-tag tag-sim" style="right: 10px; top: 10px;">Nyquist</div>
+                                <img src="dierson_nyquist.png" alt="Nyquist Plot - Dierson"
+                                    class="max-w-full max-h-full object-contain">
+                                <div
+                                    class="absolute bottom-4 left-4 bg-slate-900/80 p-2 rounded text-xs text-rose-400 font-bold border border-rose-500">
+                                    Abraça o perigo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- GUILHERME -->
+                <div id="section-guilherme" class="h-full relative hidden group-section">
+                    <div class="sub-slide active" data-index="0">
+                        <div class="flex flex-col items-center justify-center h-full text-center">
+                            <h2 class="text-5xl font-bold mb-12">Conclusão</h2>
+                            <div class="grid grid-cols-3 gap-6 w-full max-w-5xl text-left">
+                                <div
+                                    class="bg-slate-800 p-8 rounded-xl border-t-4 border-emerald-500 hover:scale-105 transition-transform">
+                                    <div class="text-4xl mb-4">✅</div>
+                                    <h3 class="text-xl font-bold text-emerald-400 mb-2">Estabilidade</h3>
+                                    <p class="text-sm text-slate-400">Garantida quando temos margens positivas no Bode e
+                                        o
+                                        Nyquist passa longe do ponto -1.</p>
+                                </div>
+                                <div
+                                    class="bg-slate-800 p-8 rounded-xl border-t-4 border-indigo-500 hover:scale-105 transition-transform">
+                                    <div class="text-4xl mb-4">📊</div>
+                                    <h3 class="text-xl font-bold text-indigo-400 mb-2">Ferramentas</h3>
+                                    <p class="text-sm text-slate-400"><strong>Bode:</strong> Visualização de banda e
+                                        rapidez. <br><strong>Nyquist:</strong> Verificação rigorosa de estabilidade.</p>
+                                </div>
+                                <div
+                                    class="bg-slate-800 p-8 rounded-xl border-t-4 border-rose-500 hover:scale-105 transition-transform">
+                                    <div class="text-4xl mb-4">🌍</div>
+                                    <h3 class="text-xl font-bold text-rose-400 mb-2">Física</h3>
+                                    <p class="text-sm text-slate-400">Polos e zeros determinam a realidade: da segurança
+                                        de
+                                        uma suspensão à instabilidade de um caça.</p>
+                                </div>
+                            </div>
+                            <div
+                                class="mt-12 text-slate-600 font-mono text-sm border-t border-slate-800 pt-6 w-1/2 mx-auto">
+                                Grupo 4 - Servomecanismos 2025</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="control-bar">
+                <div class="text-sm text-slate-400" id="slide-indicator">Slide 1 de 3</div>
+                <div class="flex gap-2">
+                    <button onclick="prevSlide()"
+                        class="px-4 py-2 bg-slate-700 hover:bg-slate-600 rounded text-sm font-bold transition-colors">←
+                        Anterior</button>
+                    <button onclick="nextSlide()"
+                        class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 rounded text-sm font-bold transition-colors">Próximo
+                        →</button>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- LOGICA JS -->
+    <script>
+        const sections = ['felipe', 'gabriel', 'cintia', 'nick', 'dierson', 'guilherme'];
+        let currentSection = 'felipe';
+        let slideIndex = 0;
+
+        function switchSection(id) {
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            const btn = document.getElementById('btn-' + id);
+            if (btn) btn.classList.add('active');
+
+            document.querySelectorAll('.group-section').forEach(sec => sec.classList.add('hidden'));
+            document.getElementById('section-' + id).classList.remove('hidden');
+
+            currentSection = id;
+            slideIndex = 0;
+            updateSlides();
+        }
+
+        function updateSlides() {
+            const container = document.getElementById('section-' + currentSection);
+            const slides = container.querySelectorAll('.sub-slide');
+            slides.forEach((s, i) => { s.classList.toggle('active', i === slideIndex); });
+            document.getElementById('slide-indicator').innerText = `Slide ${slideIndex + 1} de ${slides.length}`;
+            if (window.MathJax) MathJax.typesetPromise();
+        }
+
+        function nextSlide() {
+            const container = document.getElementById('section-' + currentSection);
+            const total = container.querySelectorAll('.sub-slide').length;
+
+            if (slideIndex < total - 1) {
+                slideIndex++;
+                updateSlides();
+            } else {
+                // Go to next section
+                const currentIndex = sections.indexOf(currentSection);
+                if (currentIndex < sections.length - 1) {
+                    switchSection(sections[currentIndex + 1]);
+                }
+            }
+        }
+
+        function prevSlide() {
+            if (slideIndex > 0) {
+                slideIndex--;
+                updateSlides();
+            } else {
+                // Optional: Go to previous section's last slide?
+                // For now, just stay at start of current section or do nothing
+                const currentIndex = sections.indexOf(currentSection);
+                if (currentIndex > 0) {
+                    // To implement "go to previous section", we'd need to know its length.
+                    // Keeping it simple: just switch section, it resets to slide 0.
+                    switchSection(sections[currentIndex - 1]);
+                }
+            }
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextSlide();
+            if (e.key === 'ArrowLeft') prevSlide();
+        });
+
+        // --- RENDERIZADORES ---
+        // As imagens estáticas já estão carregadas no HTML.
+        // Esta seção agora apenas gerencia a navegação.
+
+        window.onload = () => switchSection('felipe');
+    </script>
+</body>
+
+</html>
