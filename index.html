@@ -552,8 +552,104 @@
 
 
                 <!-- CINTIA -->
+
+
                 <div id="section-cintia" class="h-full relative hidden group-section">
                     <div class="sub-slide active" data-index="0">
+                        <h2 class="text-3xl font-bold mb-6">Introdução ao Critério de Nyquist</h2>
+                        <div class="grid grid-cols-2 gap-12 h-full">
+                            <div class="flex flex-col justify-center">
+                                <blockquote class="border-l-4 border-rose-500 pl-6 italic text-xl text-slate-300 mb-8">
+                                    "O conhecimento da resposta em frequência do sistema em malha aberta fornece
+                                    informação sobre a estabilidade do sistema em malha fechada"
+                                </blockquote>
+
+                                <div class="bg-slate-800/50 p-6 rounded-xl border border-slate-700 space-y-4">
+                                    <div class="bullet-point">
+                                        <div>
+                                            <span class="step-label text-rose-400">Definição de Estabilidade</span>
+                                            O sistema é estável se os polos de $T(s)$ estiverem no <span
+                                                class="text-emerald-400 font-bold">semiplano esquerdo</span>.
+                                        </div>
+                                    </div>
+                                    <div class="bullet-point">
+                                        <div>
+                                            <span class="step-label text-indigo-400">O Truque de Nyquist</span>
+                                            Para determinar a estabilidade de $T(s)$, basta olhar para os zeros de:
+                                            <div class="text-center text-xl font-mono font-bold text-white mt-2">
+                                                $1 + G(s)H(s)$
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="chart-box bg-slate-900 p-4 flex flex-col items-center justify-center relative">
+                                <div class="chart-tag tag-concept">Diagrama de Blocos</div>
+                                <svg class="w-full h-full" viewBox="0 0 500 300">
+                                    <defs>
+                                        <marker id="arrow-diag" markerWidth="10" markerHeight="10" refX="9" refY="3"
+                                            orient="auto">
+                                            <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+                                        </marker>
+                                    </defs>
+
+                                    <!-- Main Line -->
+                                    <text x="20" y="105" fill="#e2e8f0" font-family="monospace">R(s)</text>
+                                    <line x1="55" y1="100" x2="90" y2="100" stroke="#94a3b8" stroke-width="2"
+                                        marker-end="url(#arrow-diag)" />
+
+                                    <!-- Summing Junction -->
+                                    <circle cx="110" cy="100" r="15" stroke="#94a3b8" stroke-width="2" fill="none" />
+                                    <line x1="100" y1="100" x2="120" y2="100" stroke="#94a3b8" stroke-width="2"
+                                        transform="rotate(45 110 100)" />
+                                    <line x1="100" y1="100" x2="120" y2="100" stroke="#94a3b8" stroke-width="2"
+                                        transform="rotate(-45 110 100)" />
+
+                                    <!-- To G(s) -->
+                                    <line x1="125" y1="100" x2="170" y2="100" stroke="#94a3b8" stroke-width="2"
+                                        marker-end="url(#arrow-diag)" />
+
+                                    <!-- G(s) Block -->
+                                    <rect x="170" y="70" width="80" height="60" rx="4" stroke="#6366f1" stroke-width="2"
+                                        fill="#1e293b" />
+                                    <text x="210" y="105" fill="#6366f1" font-weight="bold"
+                                        text-anchor="middle">G(s)</text>
+
+                                    <!-- To Output -->
+                                    <line x1="250" y1="100" x2="350" y2="100" stroke="#94a3b8" stroke-width="2"
+                                        marker-end="url(#arrow-diag)" />
+                                    <text x="370" y="105" fill="#e2e8f0" font-family="monospace">C(s)</text>
+
+                                    <!-- Feedback Path Start -->
+                                    <circle cx="300" cy="100" r="4" fill="#94a3b8" />
+                                    <line x1="300" y1="100" x2="300" y2="200" stroke="#94a3b8" stroke-width="2" />
+                                    <line x1="300" y1="200" x2="260" y2="200" stroke="#94a3b8" stroke-width="2"
+                                        marker-end="url(#arrow-diag)" />
+
+                                    <!-- H(s) Block -->
+                                    <rect x="170" y="170" width="80" height="60" rx="4" stroke="#10b981"
+                                        stroke-width="2" fill="#1e293b" />
+                                    <text x="210" y="205" fill="#10b981" font-weight="bold"
+                                        text-anchor="middle">H(s)</text>
+
+                                    <!-- Feedback Path End -->
+                                    <line x1="170" y1="200" x2="110" y2="200" stroke="#94a3b8" stroke-width="2" />
+                                    <line x1="110" y1="200" x2="110" y2="125" stroke="#94a3b8" stroke-width="2"
+                                        marker-end="url(#arrow-diag)" />
+
+                                    <!-- T(s) Formula Box -->
+                                    <rect x="320" y="150" width="160" height="80" rx="8" stroke="#e2e8f0"
+                                        stroke-width="1" fill="#0f172a" />
+                                    <text x="400" y="180" fill="#94a3b8" font-size="12" text-anchor="middle">Malha
+                                        Fechada</text>
+                                    <text x="400" y="210" fill="#e2e8f0" font-size="16" font-weight="bold"
+                                        text-anchor="middle">T(s) = G / (1+GH)</text>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="sub-slide" data-index="1">
                         <div class="flex flex-col items-center justify-center h-full text-center">
                             <h1 class="text-5xl font-bold mb-8">O Critério de Nyquist</h1>
                             <div class="grid grid-cols-2 gap-12 max-w-4xl w-full text-left">
@@ -581,7 +677,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="sub-slide" data-index="1">
+
+                    <div class="sub-slide" data-index="2">
                         <h2 class="text-2xl font-bold mb-4">Mapeamento Polar</h2>
                         <div class="grid grid-cols-4 gap-4 h-full">
                             <div class="col-span-1 flex flex-col justify-center space-y-6">
