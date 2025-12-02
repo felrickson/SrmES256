@@ -622,12 +622,23 @@
                                     <line x1="170" y1="200" x2="110" y2="200" stroke="#94a3b8" stroke-width="2" />
                                     <line x1="110" y1="200" x2="110" y2="125" stroke="#94a3b8" stroke-width="2"
                                         marker-end="url(#arrow-diag)" />
-                                    <rect x="280" y="150" width="240" height="80" rx="8" stroke="#e2e8f0"
+                                    <rect x="330" y="140" width="150" height="90" rx="8" stroke="#e2e8f0"
                                         stroke-width="1" fill="#0f172a" />
-                                    <text x="400" y="180" fill="#94a3b8" font-size="12" text-anchor="middle">Malha
-                                        Fechada</text>
-                                    <text x="400" y="210" fill="#e2e8f0" font-size="14" font-weight="bold"
-                                        text-anchor="middle">H(s) = G(s) / [1 + G(s)H(s)]</text>
+                                    <text x="405" y="160" fill="#94a3b8" font-size="10" text-anchor="middle"
+                                        font-weight="bold">MALHA FECHADA</text>
+
+                                    <!-- Formula T(s) = ... -->
+                                    <text x="355" y="195" fill="#e2e8f0" font-size="14" font-weight="bold"
+                                        font-family="serif" font-style="italic">T(s) =</text>
+
+                                    <!-- Fraction -->
+                                    <g transform="translate(385, 170)">
+                                        <text x="40" y="15" fill="#e2e8f0" font-size="12" font-weight="bold"
+                                            text-anchor="middle">G(s)</text>
+                                        <line x1="5" y1="20" x2="75" y2="20" stroke="#e2e8f0" stroke-width="1" />
+                                        <text x="40" y="35" fill="#e2e8f0" font-size="12" font-weight="bold"
+                                            text-anchor="middle">1 + G(s)H(s)</text>
+                                    </g>
                                 </svg>
                             </div>
                         </div>
