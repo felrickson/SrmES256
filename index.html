@@ -555,6 +555,7 @@
 
 
                 <div id="section-cintia" class="h-full relative hidden group-section">
+                    <!-- Slide 0: Introdução (Notes) -->
                     <div class="sub-slide active" data-index="0">
                         <h2 class="text-3xl font-bold mb-6">Introdução ao Critério de Nyquist</h2>
                         <div class="grid grid-cols-2 gap-12 h-full">
@@ -593,52 +594,34 @@
                                             <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
                                         </marker>
                                     </defs>
-
-                                    <!-- Main Line -->
                                     <text x="20" y="105" fill="#e2e8f0" font-family="monospace">R(s)</text>
                                     <line x1="55" y1="100" x2="90" y2="100" stroke="#94a3b8" stroke-width="2"
                                         marker-end="url(#arrow-diag)" />
-
-                                    <!-- Summing Junction -->
                                     <circle cx="110" cy="100" r="15" stroke="#94a3b8" stroke-width="2" fill="none" />
                                     <line x1="100" y1="100" x2="120" y2="100" stroke="#94a3b8" stroke-width="2"
                                         transform="rotate(45 110 100)" />
                                     <line x1="100" y1="100" x2="120" y2="100" stroke="#94a3b8" stroke-width="2"
                                         transform="rotate(-45 110 100)" />
-
-                                    <!-- To G(s) -->
                                     <line x1="125" y1="100" x2="170" y2="100" stroke="#94a3b8" stroke-width="2"
                                         marker-end="url(#arrow-diag)" />
-
-                                    <!-- G(s) Block -->
                                     <rect x="170" y="70" width="80" height="60" rx="4" stroke="#6366f1" stroke-width="2"
                                         fill="#1e293b" />
                                     <text x="210" y="105" fill="#6366f1" font-weight="bold"
                                         text-anchor="middle">G(s)</text>
-
-                                    <!-- To Output -->
                                     <line x1="250" y1="100" x2="350" y2="100" stroke="#94a3b8" stroke-width="2"
                                         marker-end="url(#arrow-diag)" />
                                     <text x="370" y="105" fill="#e2e8f0" font-family="monospace">C(s)</text>
-
-                                    <!-- Feedback Path Start -->
                                     <circle cx="300" cy="100" r="4" fill="#94a3b8" />
                                     <line x1="300" y1="100" x2="300" y2="200" stroke="#94a3b8" stroke-width="2" />
                                     <line x1="300" y1="200" x2="260" y2="200" stroke="#94a3b8" stroke-width="2"
                                         marker-end="url(#arrow-diag)" />
-
-                                    <!-- H(s) Block -->
                                     <rect x="170" y="170" width="80" height="60" rx="4" stroke="#10b981"
                                         stroke-width="2" fill="#1e293b" />
                                     <text x="210" y="205" fill="#10b981" font-weight="bold"
                                         text-anchor="middle">H(s)</text>
-
-                                    <!-- Feedback Path End -->
                                     <line x1="170" y1="200" x2="110" y2="200" stroke="#94a3b8" stroke-width="2" />
                                     <line x1="110" y1="200" x2="110" y2="125" stroke="#94a3b8" stroke-width="2"
                                         marker-end="url(#arrow-diag)" />
-
-                                    <!-- T(s) Formula Box -->
                                     <rect x="320" y="150" width="160" height="80" rx="8" stroke="#e2e8f0"
                                         stroke-width="1" fill="#0f172a" />
                                     <text x="400" y="180" fill="#94a3b8" font-size="12" text-anchor="middle">Malha
@@ -649,6 +632,8 @@
                             </div>
                         </div>
                     </div>
+
+                    <!-- Slide 1: O Critério de Nyquist (Original Title) -->
                     <div class="sub-slide" data-index="1">
                         <div class="flex flex-col items-center justify-center h-full text-center">
                             <h1 class="text-5xl font-bold mb-8">O Critério de Nyquist</h1>
@@ -678,7 +663,103 @@
                         </div>
                     </div>
 
+                    <!-- Slide 2: Teorema de Cauchy (NEW) -->
                     <div class="sub-slide" data-index="2">
+                        <h2 class="text-3xl font-bold mb-6">Teorema de Cauchy</h2>
+                        <div class="grid grid-cols-2 gap-12 h-full">
+                            <div class="flex flex-col justify-center">
+                                <div class="bg-slate-800/50 p-8 rounded-xl border border-slate-700 space-y-6">
+                                    <p class="text-lg text-slate-300 leading-relaxed">
+                                        Se um contorno <strong class="text-indigo-400">A</strong> em sentido <span
+                                            class="text-indigo-400 font-bold">horário</span> no plano $s$ envolve
+                                        <strong class="text-white">Z</strong> zeros e <strong
+                                            class="text-white">P</strong> polos de $F(s)$ e não passa por nenhum polo e
+                                        zero de $F(s)$...
+                                    </p>
+                                    <div class="flex items-center justify-center py-4">
+                                        <div class="text-4xl text-slate-500">⬇️</div>
+                                    </div>
+                                    <p class="text-lg text-slate-300 leading-relaxed">
+                                        ...o contorno <strong class="text-emerald-400">B</strong> envolve a origem do
+                                        plano $F(s)$ <strong class="text-white">N</strong> vezes no sentido <span
+                                            class="text-emerald-400 font-bold">anti-horário</span>.
+                                    </p>
+
+                                    <div class="mt-6 p-4 bg-slate-900 rounded border border-slate-600 text-center">
+                                        <span class="text-2xl font-mono font-bold text-white">N = Z - P</span>
+                                        <p class="text-xs text-slate-500 mt-2 uppercase tracking-wider">Princípio do
+                                            Argumento</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="chart-box bg-slate-900 p-4 flex flex-col items-center justify-center relative">
+                                <div class="chart-tag tag-concept">Mapeamento Conforme</div>
+                                <!-- Conceptual SVG for Cauchy Theorem -->
+                                <svg class="w-full h-full" viewBox="0 0 500 300">
+                                    <defs>
+                                        <marker id="arrow-cauchy" markerWidth="10" markerHeight="10" refX="9" refY="3"
+                                            orient="auto">
+                                            <path d="M0,0 L0,6 L9,3 z" fill="#94a3b8" />
+                                        </marker>
+                                    </defs>
+
+                                    <!-- S-Plane -->
+                                    <g transform="translate(20, 20)">
+                                        <text x="100" y="20" fill="#94a3b8" font-weight="bold"
+                                            text-anchor="middle">Plano s</text>
+                                        <line x1="100" y1="40" x2="100" y2="240" stroke="#334155" stroke-width="1" />
+                                        <line x1="20" y1="140" x2="180" y2="140" stroke="#334155" stroke-width="1" />
+
+                                        <!-- Contour A (Clockwise) -->
+                                        <path
+                                            d="M70,110 C70,110 130,110 130,140 C130,170 70,170 70,140 C70,110 70,110 70,110"
+                                            fill="rgba(99, 102, 241, 0.2)" stroke="#6366f1" stroke-width="2" />
+                                        <path d="M125,125 L130,130 L125,135" fill="none" stroke="#6366f1"
+                                            stroke-width="2" /> <!-- Arrow hint -->
+
+                                        <!-- Pole and Zero inside -->
+                                        <text x="90" y="145" fill="#ef4444" font-weight="bold" font-size="14">×</text>
+                                        <!-- Pole -->
+                                        <circle cx="110" cy="140" r="3" stroke="#10b981" stroke-width="2" fill="none" />
+                                        <!-- Zero -->
+
+                                        <text x="100" y="260" fill="#6366f1" font-size="12"
+                                            text-anchor="middle">Contorno A (Horário)</text>
+                                    </g>
+
+                                    <!-- Mapping Arrow -->
+                                    <path d="M210,140 Q230,120 250,140" fill="none" stroke="#94a3b8" stroke-width="2"
+                                        marker-end="url(#arrow-cauchy)" />
+                                    <text x="230" y="110" fill="#94a3b8" font-size="12" text-anchor="middle">F(s)</text>
+
+                                    <!-- F(s)-Plane -->
+                                    <g transform="translate(280, 20)">
+                                        <text x="100" y="20" fill="#94a3b8" font-weight="bold"
+                                            text-anchor="middle">Plano F(s)</text>
+                                        <line x1="100" y1="40" x2="100" y2="240" stroke="#334155" stroke-width="1" />
+                                        <line x1="20" y1="140" x2="180" y2="140" stroke="#334155" stroke-width="1" />
+
+                                        <!-- Origin -->
+                                        <circle cx="100" cy="140" r="2" fill="#fff" />
+
+                                        <!-- Contour B (Counter-Clockwise if N > 0) -->
+                                        <!-- Let's assume Z=1, P=1 -> N=0 (No encirclement) for simplicity visual? 
+                                             Or user said N=Z-P. Let's show a generic encirclement. -->
+                                        <path d="M60,140 C60,80 140,80 140,140 C140,200 60,200 60,140"
+                                            fill="rgba(16, 185, 129, 0.2)" stroke="#10b981" stroke-width="2" />
+                                        <path d="M100,80 L95,85 L100,90" fill="none" stroke="#10b981"
+                                            stroke-width="2" /> <!-- Arrow CCW -->
+
+                                        <text x="100" y="260" fill="#10b981" font-size="12"
+                                            text-anchor="middle">Contorno B (Anti-Horário)</text>
+                                    </g>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Slide 3: Mapeamento Polar (Original Graph) -->
+                    <div class="sub-slide" data-index="3">
                         <h2 class="text-2xl font-bold mb-4">Mapeamento Polar</h2>
                         <div class="grid grid-cols-4 gap-4 h-full">
                             <div class="col-span-1 flex flex-col justify-center space-y-6">
