@@ -622,43 +622,43 @@
                                     <line x1="170" y1="200" x2="110" y2="200" stroke="#94a3b8" stroke-width="2" />
                                     <line x1="110" y1="200" x2="110" y2="125" stroke="#94a3b8" stroke-width="2"
                                         marker-end="url(#arrow-diag)" />
-                                    <rect x="320" y="150" width="160" height="80" rx="8" stroke="#e2e8f0"
+                                    <rect x="280" y="150" width="240" height="80" rx="8" stroke="#e2e8f0"
                                         stroke-width="1" fill="#0f172a" />
                                     <text x="400" y="180" fill="#94a3b8" font-size="12" text-anchor="middle">Malha
                                         Fechada</text>
-                                    <text x="400" y="210" fill="#e2e8f0" font-size="16" font-weight="bold"
-                                        text-anchor="middle">T(s) = G / (1+GH)</text>
+                                    <text x="400" y="210" fill="#e2e8f0" font-size="14" font-weight="bold"
+                                        text-anchor="middle">H(s) = G(s) / [1 + G(s)H(s)]</text>
                                 </svg>
                             </div>
                         </div>
                     </div>
-
-                    <!-- Slide 1: O Critério de Nyquist (Original Title) -->
-                    <div class="sub-slide" data-index="1">
-                        <div class="flex flex-col items-center justify-center h-full text-center">
-                            <h1 class="text-5xl font-bold mb-8">O Critério de Nyquist</h1>
-                            <div class="grid grid-cols-2 gap-12 max-w-4xl w-full text-left">
-                                <div
-                                    class="bg-slate-800 p-8 rounded-xl border border-slate-600 flex flex-col items-center justify-center">
-                                    <h3 class="text-2xl font-bold text-rose-400 mb-2">O Ponto Crítico</h3>
-                                    <div
-                                        class="text-6xl font-mono text-center my-6 text-white bg-slate-900 px-6 py-2 rounded">
-                                        -1 + j0</div>
+                    <!-- Slide 3: Mapeamento Polar (Original Graph) -->
+                    <div class="sub-slide" data-index="3">
+                        <h2 class="text-2xl font-bold mb-4">Mapeamento Polar</h2>
+                        <div class="grid grid-cols-4 gap-4 h-full">
+                            <div class="col-span-1 flex flex-col justify-center space-y-6">
+                                <h4
+                                    class="font-bold text-slate-400 uppercase text-xs tracking-wider border-b border-slate-700 pb-2">
+                                    Como Interpretar</h4>
+                                <div class="bullet-point text-sm">
+                                    <div><span class="step-label text-indigo-400">Curva Azul</span>É o mapeamento de
+                                        $G(j\omega)$ no plano complexo.</div>
                                 </div>
-                                <div class="flex flex-col justify-center space-y-6">
-                                    <div class="highlight-box border-rose-500 bg-rose-500/10">
-                                        <h3 class="font-bold text-rose-400 mb-2">A Regra de Ouro</h3>
-                                        <p class="text-sm text-slate-300">Para sistemas estáveis em malha aberta
-                                            ($P=0$):
-                                        </p>
-                                        <p class="text-lg font-bold text-white mt-2">O sistema é estável se o contorno
-                                            <span class="text-rose-400">NÃO</span> envolver o ponto -1.
-                                        </p>
-                                    </div>
-                                    <p class="text-sm text-slate-400"><strong>Vantagem:</strong> Mostra a estabilidade
-                                        absoluta de forma geométrica. Se a curva "abraçar" o ponto -1, o sistema vai
-                                        explodir (divergir).</p>
+                                <div class="bullet-point text-sm">
+                                    <div><span class="step-label text-rose-500">Ponto Vermelho</span>É o ponto crítico
+                                        (-1,
+                                        0). O "buraco negro" da instabilidade.</div>
                                 </div>
+                                <div class="bullet-point text-sm">
+                                    <div><span class="step-label text-emerald-400">Distância</span>A proximidade mínima
+                                        entre a curva e o ponto define a robustez.</div>
+                                </div>
+                            </div>
+                            <div
+                                class="col-span-3 chart-box bg-slate-900 flex items-center justify-center relative p-2">
+                                <div class="chart-tag tag-concept">Ilustração Conceitual (Python)</div>
+                                <img src="cintia_nyquist.png" alt="Nyquist Plot - Cintia"
+                                    class="max-w-full max-h-full object-contain">
                             </div>
                         </div>
                     </div>
@@ -757,34 +757,32 @@
                             </div>
                         </div>
                     </div>
-
-                    <!-- Slide 3: Mapeamento Polar (Original Graph) -->
-                    <div class="sub-slide" data-index="3">
-                        <h2 class="text-2xl font-bold mb-4">Mapeamento Polar</h2>
-                        <div class="grid grid-cols-4 gap-4 h-full">
-                            <div class="col-span-1 flex flex-col justify-center space-y-6">
-                                <h4
-                                    class="font-bold text-slate-400 uppercase text-xs tracking-wider border-b border-slate-700 pb-2">
-                                    Como Interpretar</h4>
-                                <div class="bullet-point text-sm">
-                                    <div><span class="step-label text-indigo-400">Curva Azul</span>É o mapeamento de
-                                        $G(j\omega)$ no plano complexo.</div>
+                    <!-- Slide 1: O Critério de Nyquist (Original Title) -->
+                    <div class="sub-slide" data-index="1">
+                        <div class="flex flex-col items-center justify-center h-full text-center">
+                            <h1 class="text-5xl font-bold mb-8">O Critério de Nyquist</h1>
+                            <div class="grid grid-cols-2 gap-12 max-w-4xl w-full text-left">
+                                <div
+                                    class="bg-slate-800 p-8 rounded-xl border border-slate-600 flex flex-col items-center justify-center">
+                                    <h3 class="text-2xl font-bold text-rose-400 mb-2">O Ponto Crítico</h3>
+                                    <div
+                                        class="text-6xl font-mono text-center my-6 text-white bg-slate-900 px-6 py-2 rounded">
+                                        -1 + j0</div>
                                 </div>
-                                <div class="bullet-point text-sm">
-                                    <div><span class="step-label text-rose-500">Ponto Vermelho</span>É o ponto crítico
-                                        (-1,
-                                        0). O "buraco negro" da instabilidade.</div>
+                                <div class="flex flex-col justify-center space-y-6">
+                                    <div class="highlight-box border-rose-500 bg-rose-500/10">
+                                        <h3 class="font-bold text-rose-400 mb-2">A Regra de Ouro</h3>
+                                        <p class="text-sm text-slate-300">Para sistemas estáveis em malha aberta
+                                            ($P=0$):
+                                        </p>
+                                        <p class="text-lg font-bold text-white mt-2">O sistema é estável se o contorno
+                                            <span class="text-rose-400">NÃO</span> envolver o ponto -1.
+                                        </p>
+                                    </div>
+                                    <p class="text-sm text-slate-400"><strong>Vantagem:</strong> Mostra a estabilidade
+                                        absoluta de forma geométrica. Se a curva "abraçar" o ponto -1, o sistema vai
+                                        explodir (divergir).</p>
                                 </div>
-                                <div class="bullet-point text-sm">
-                                    <div><span class="step-label text-emerald-400">Distância</span>A proximidade mínima
-                                        entre a curva e o ponto define a robustez.</div>
-                                </div>
-                            </div>
-                            <div
-                                class="col-span-3 chart-box bg-slate-900 flex items-center justify-center relative p-2">
-                                <div class="chart-tag tag-concept">Ilustração Conceitual (Python)</div>
-                                <img src="cintia_nyquist.png" alt="Nyquist Plot - Cintia"
-                                    class="max-w-full max-h-full object-contain">
                             </div>
                         </div>
                     </div>
