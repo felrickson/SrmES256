@@ -34,9 +34,9 @@ plt.rcParams.update({
     'lines.linewidth': 2.5
 })
 
-def save_bode(sys, filename, title, color='#818cf8'):
+def save_bode(sys, filename, title, color='#818cf8', omega=None, wrap_phase=False):
     plt.figure(figsize=(10, 6))
-    ct.bode_plot(sys, dB=True, color=color)
+    ct.bode_plot(sys, omega, dB=True, color=color, wrap_phase=wrap_phase)
     # Customize the plot created by control library
     # Note: control library creates subplots, so we need to adjust current figure
     fig = plt.gcf()
@@ -89,7 +89,8 @@ print("Generating Nick's Nyquist Plot...")
 save_nyquist(G2, 'nick_nyquist.png', 'Nyquist - G2: Integrador (Satélite)', color='#d97706', xlim=[-5, 5], ylim=[-15, 15])
 
 print("Generating Dierson's Bode Plot...")
-save_bode(G3, 'dierson_bode.png', 'Bode - G3: Instável (Pêndulo)', color='#f43f5e')
+Ws = np.logspace(-3, 2, 1000)
+save_bode(G3, 'dierson_bode.png', 'Bode - G3: Instável (Pêndulo)', color='#f43f5e', omega=Ws, wrap_phase=True)
 
 print("Generating Dierson's Nyquist Plot...")
 save_nyquist(G3, 'dierson_nyquist.png', 'Nyquist - G3: Instável', color='#fb7185', xlim=[-4, 4], ylim=[-4, 4])
